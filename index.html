@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Museo De Los 4 Ases</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Reset y estilos generales */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            scroll-behavior: smooth;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        /* Colores sobrios: Fondo gris claro, texto oscuro, acentos en azul institucional */
+        .hero {
+            background-image: url('imagen-hero.jpg'); /* Editable: Cambia la URL de la imagen de fondo */
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            color: white;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5); /* Overlay oscuro suave */
+            z-index: 1;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 800px;
+            padding: 20px;
+        }
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #007bff; /* Azul institucional */
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        /* Menú fijo */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 10;
+            padding: 10px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+        }
+        nav li {
+            margin: 0 20px;
+        }
+        nav a {
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        nav a:hover {
+            color: #007bff;
+        }
+        /* Secciones */
+        section {
+            padding: 80px 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #5296aa;
+        }
+        /* Sección 2: Historia y Biografía */
+        .historia, .biografia {
+            margin-bottom: 40px;
+        }
+        .historia-content, .biografia-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .historia-text, .biografia-text {
+            flex: 1;
+            min-width: 300px;
+        }
+        .galeria {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .galeria img {
+            width: calc(33.333% - 10px);
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .biografia img {
+            width: 200px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        /* Sección 3: Contacto */
+        .contacto-content {
+            text-align: center;
+        }
+        .contacto-info {
+            margin-bottom: 20px;
+        }
+        .contacto-info p {
+            margin: 10px 0;
+        }
+        .social-icons {
+            margin-top: 20px;
+        }
+        .social-icons a {
+            margin: 0 10px;
+            color: #007bff;
+            font-size: 2rem;
+            transition: color 0.3s;
+        }
+        .social-icons a:hover {
+            color: #0056b3;
+        }
+        /* Footer */
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .hero p {
+                font-size: 1rem;
+            }
+            .galeria img {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            .historia-content, .biografia-content {
+                flex-direction: column;
+            }
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            nav li {
+                margin: 10px 0;
+            }
+        }
+        /* Animaciones suaves al scroll (usando CSS) */
+        section {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.6s, transform 0.6s;
+        }
+        section.in-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== GALERÍA SLIDER ===== */
+.galeria-slider {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.galeria-viewport {
+    overflow: hidden;
+    width: 100%;
+}
+
+.galeria-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.galeria-track img {
+    width: calc(100% / 3);
+    height: 200px;
+    object-fit: cover;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+/* Botones */
+.slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.6);
+    border: none;
+    color: white;
+    font-size: 24px;
+    padding: 10px 14px;
+    cursor: pointer;
+    z-index: 2;
+    border-radius: 50%;
+}
+
+.slider-btn:hover {
+    background: rgba(0,0,0,0.8);
+}
+
+.slider-btn.prev {
+    left: -10px;
+}
+
+.slider-btn.next {
+    right: -10px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .galeria-track img {
+        width: 100%;
+    }
+}
+
+/* ================= RESPONSIVE GLOBAL ================= */
+
+/* ---------- Pantallas grandes (TV / 2K / 4K) ---------- */
+@media (min-width: 1400px) {
+    .container {
+        max-width: 1300px;
+    }
+    .hero h1 {
+        font-size: 3.5rem;
+    }
+    .hero p {
+        font-size: 1.3rem;
+    }
+}
+
+/* ---------- Laptops y desktop ---------- */
+@media (max-width: 1200px) {
+    .container {
+        max-width: 1100px;
+    }
+}
+
+/* ---------- Tablets horizontales ---------- */
+@media (max-width: 992px) {
+    section {
+        padding: 70px 20px;
+    }
+
+    .historia-content,
+    .biografia-content {
+        flex-direction: column;
+    }
+
+    .galeria-track img {
+        width: 50%;
+    }
+}
+
+/* ---------- Tablets verticales ---------- */
+@media (max-width: 768px) {
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    nav li {
+        margin: 12px 0;
+    }
+
+    .hero {
+        height: auto;
+        padding: 120px 20px 80px;
+    }
+
+    .hero h1 {
+        font-size: 2.2rem;
+    }
+
+    .hero p {
+        font-size: 1.05rem;
+    }
+
+    h2 {
+        font-size: 2rem;
+    }
+
+    .galeria-track img {
+        width: 100%;
+    }
+
+    .biografia img {
+        margin: 0 auto;
+        display: block;
+    }
+}
+
+/* ================= FIX MOBILE REAL ================= */
+@media (max-width: 768px) {
+
+    /* --- NAV --- */
+    nav {
+        padding: 8px 0;
+    }
+
+    nav ul {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    nav li {
+        margin: 0;
+    }
+
+    /* --- HERO --- */
+    .hero {
+        height: auto;              /* 🔴 clave */
+        min-height: 100vh;
+        padding: 120px 16px 80px;  /* evita que el menú tape */
+        background-position: center top;
+    }
+
+    .hero-content {
+        padding: 0;
+    }
+
+    .hero h1 {
+        font-size: 2rem;
+        line-height: 1.2;
+    }
+
+    .hero p {
+        font-size: 1rem;
+    }
+
+    /* --- SECCIONES --- */
+    section {
+        min-height: auto;   /* 🔴 clave */
+        padding: 70px 16px;
+    }
+
+    /* --- HISTORIA / BIOGRAFÍA --- */
+    .historia-content,
+    .biografia-content {
+        flex-direction: column;
+    }
+
+    .historia-text,
+    .biografia-text {
+        width: 100%;
+    }
+
+    .biografia img {
+        width: 100%;
+        max-width: 280px;
+        margin: 0 auto 20px;
+        display: block;
+    }
+
+    /* --- GALERÍA SLIDER --- */
+    .galeria-slider {
+        margin-top: 20px;
+    }
+
+    .galeria-track img {
+        width: 100%;        /* 🔴 1 imagen real */
+        height: 200px;
+    }
+
+    .slider-btn {
+        padding: 8px 10px;
+        font-size: 18px;
+    }
+
+    .slider-btn.prev {
+        left: 5px;
+    }
+
+    .slider-btn.next {
+        right: 5px;
+    }
+
+    /* --- CONTACTO --- */
+    .btn {
+        width: 100%;
+        text-align: center;
+        padding: 14px;
+    }
+
+    .social-icons a {
+        font-size: 1.7rem;
+    }
+}
+
+/* ================= CELULARES MUY CHICOS ================= */
+@media (max-width: 360px) {
+    .hero h1 {
+        font-size: 1.7rem;
+    }
+
+    .hero p {
+        font-size: 0.95rem;
+    }
+
+    h2 {
+        font-size: 1.6rem;
+    }
+}
+
+/* ================= MOBILE FIX DEFINITIVO ================= */
+@media (max-width: 600px) {
+
+    /* NAV */
+    nav {
+        padding: 6px 0;
+    }
+
+    nav ul {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    /* HERO */
+    .hero {
+        height: auto !important;
+        min-height: 100vh;
+        padding: 130px 14px 80px;
+        background-position: center top;
+    }
+
+    .hero h1 {
+        font-size: 1.9rem;
+        line-height: 1.2;
+    }
+
+    .hero p {
+        font-size: 1rem;
+    }
+
+    /* SECCIONES */
+    section {
+        min-height: auto !important;
+        padding: 60px 14px;
+    }
+
+    /* HISTORIA / BIO */
+    .historia-content,
+    .biografia-content {
+        flex-direction: column;
+    }
+
+    .biografia img {
+        width: 100%;
+        max-width: 260px;
+        margin: 0 auto 20px;
+        display: block;
+    }
+
+    /* ===== SLIDER (CLAVE) ===== */
+    .galeria-slider {
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .galeria-track {
+        display: flex;
+    }
+
+    .galeria-track img {
+        width: 100% !important;
+        min-width: 100%;
+        height: 190px;
+        object-fit: cover;
+    }
+
+    .slider-btn {
+        padding: 8px 10px;
+        font-size: 18px;
+        z-index: 10;
+    }
+
+    .slider-btn.prev { left: 6px; }
+    .slider-btn.next { right: 6px; }
+
+    /* BOTONES */
+    .btn {
+        width: 100%;
+        padding: 14px;
+    }
+}
+
+/* ================= FIX ESTRUCTURAL MOBILE ================= */
+@media (max-width: 768px) {
+
+    /* 🔴 DEJAR DE CENTRAR TODO */
+    section {
+        display: block !important;
+        min-height: auto !important;
+        padding: 60px 16px;
+    }
+
+    /* 🔴 HERO SIN vh */
+    .hero {
+        height: auto !important;
+        min-height: auto !important;
+        padding: 140px 16px 80px;
+    }
+
+    /* TEXTO */
+    .hero h1 {
+        font-size: 2rem;
+        line-height: 1.2;
+    }
+
+    .hero p {
+        font-size: 1rem;
+    }
+
+    /* HISTORIA / BIO */
+    .historia-content,
+    .biografia-content {
+        display: block;
+    }
+
+    .biografia img {
+        width: 100%;
+        max-width: 260px;
+        margin: 0 auto 20px;
+        display: block;
+    }
+
+    /* 🔴 SLIDER MOBILE REAL */
+    .galeria-slider {
+        position: relative;
+        width: 100%;
+    }
+
+    .galeria-track img {
+        width: 100% !important;
+        min-width: 100%;
+        height: 190px;
+    }
+
+    .slider-btn {
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 5;
+    }
+
+    /* BOTONES */
+    .btn {
+        width: 100%;
+        padding: 14px;
+        text-align: center;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <!-- Menú fijo -->
+    <nav>
+        <ul>
+            <li><a href="#seccion1">Introducción</a></li>
+            <li><a href="#seccion2">Historia y Biografía</a></li>
+            <li><a href="#seccion3">Contáctanos</a></li>
+        </ul>
+    </nav>
+
+    <!-- Sección 1: Introducción (Hero) -->
+    <section id="seccion1" class="hero">
+        <div class="hero-content">
+            <h1>Museo De Los 4 Ases</h1>
+            <p>Descubre la vida y legado de Rulo Grabovieski a través de exposiciones que celebran su contribución al arte y la historia. Nuestro museo se dedica a preservar la memoria de este icono cultural y la apreciación artística en la comunidad.</p>
+            <a href="#seccion2" class="btn">Explorar Historia</a>
+        </div>
+    </section>
+
+    <!-- Sección 2: Historia del Museo y Biografía -->
+    <section id="seccion2">
+        <div class="container">
+            <h2>Historia del Museo y Biografía</h2>
+            
+            <div class="historia">
+                <h3>Historia del Museo</h3>
+                <div class="historia-content">
+                    <div class="historia-text">
+                        <p>El Museo de Los 4 Ases fue fundado en 2022 con el propósito de conocer mas a fondo la vida y obra de Rulo y su conjunto a lo largo de las epocas. Surgió de la iniciativa de mostrar objetos, menciones y recuerdos que fueron quedando a lo largo de la vida de Rulo.</p>
+                    </div>
+                    <div class="galeria-slider">
+    <button class="slider-btn prev"><i class="fas fa-chevron-left"></i></button>
+
+    <div class="galeria-viewport">
+        <div class="galeria-track">
+            <img src="museo img.jpeg" alt="Imagen del museo 1">
+            <img src="museo 22.jpg" alt="Imagen del museo 2">
+            <img src="museo33.jpg" alt="Imagen del museo 3">
+            <img src="museo44.jpg" alt="Imagen del museo 4">
+            <img src="img museoo.jpg" alt="Imagen del museo 5">
+            <img src="imgmuseo22.jpeg" alt="Imagen del museo 5">
+            <img src="imgmuseo99.jpeg" alt="Imagen del museo 5">
+            <img src="imgmuseoeoeo.jpeg" alt="Imagen del museo 5">
+            <img src="imgrulo.jpeg" alt="Imagen del museo 5">
+        </div>
+    </div>
+
+    <button class="slider-btn next"><i class="fas fa-chevron-right"></i></button>
+</div>
+
+                </div>
+            </div>
+            
+            <div class="biografia">
+                <h3>Biografía de Rulo Grabovieski</h3>
+                <div class="biografia-content">
+                    <img src="Rulo_Grabovieski.jpeg" alt="Retrato de Rulo Grabowsky" /> <!-- Editable -->
+                    <div class="biografia-text">
+                        <p> Rulo Grabovieski nació en Apóstoles el 28 de Noviembre de 1955, es un compositor y acordeonista argentino de música popular argentina-ucraniana.
+Rulo comenzó a tocar a los dieciseis años después de haber ido a clases con la profesora Blanquita Oroño. En 1972 fue contratado para tocar en un casamiento y a la semana siguiente -un día martes- otro, con dos acordeones y una batería, no contaban con equipo de amplificación. Así comenzó su carrera como músico actuando en bailes de la zona: en Las Tunas, Azara y San José, y también en esos años participaba como músico y bailarín del Vallet Vesná de Apóstoles.
+Como integrantes lo acompañaban con otro acordeón Ramón Grabovieski y Lito Solonezen en la batería. Al año se sumó Carlos Herrera y Gerónimo Durán.
+En el año 1982 se inicia en el plano profesional con Los 4 Ases y la grabación de su primer disco «Apóstoles Ciudad de las Flores», siempre manteniendo el ritmo y el estilo que hasta hoy lo identifica con Kolomeikas y Corridos. Así comenzaron a transitar por las radios y la televisión y por lugares de la provincia que anteriormente no llegaban y también otras provincias como Chaco, Corrientes, Entre Ríos y otros países como Paraguay y Brasil.
+Con un estilo propio que resulta la mezcla de la música ucraniana y algo de otras colectividades (alemana, brasilera e italiana) sumada a la música regional hace de Los 4 Ases un género particular pero siempre pensando en la fiesta familiar.
+Participan hace muchos años en la Fiesta Nacional e Internacional del Inmigrante en Oberá, precisamente en la colectividad Ucraniana y en los festivales de toda la región, como el Festival de la Yerba Mate en Apóstoles, Festival del Litoral en Posadas, Festival del Tarefero en Concepción de la Sierra, Festival de la Mojarrita en Azara, Festival del Té en Campo Viera, Festival del Agricultor en Andresito, Fiesta Nacional y Provincial de la Cerveza en Leandro N. Além, Festival de la Canción en Liebig Corrientes.
+Hoy con un grupo de diez personas (6 músicos, 1 sonidista y 2 utileros), Los 4 Ases llevan la música a muchas fiestas con equipo de sonido, luces y un móvil para el traslado propios.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección 3: Contáctanos -->
+    <section id="seccion3">
+        <div class="container">
+            <h2>Contáctanos</h2>
+            <div class="contacto-content">
+                <div class="contacto-info">
+                    <p><strong>Email:</strong> los4asesmuscia@gmail.com</p> <!-- Editable -->
+                    <p><strong>Teléfono:</strong> +54 3758649299</p> <!-- Editable -->
+                    <p><strong>Dirección:</strong> Rivadavia 1557, Apóstoles, Misiones. </p> <!-- Editable -->
+                </div>
+                <a href="https://wa.me/+54 9 3758 64-9299" class="btn" target="_blank">Contactanos por WhatsApp para conocer el museo</a>
+                <div class="social-icons">
+                    <a href="https://www.instagram.com/rulo_grabovieski/" target="_blank"><i class="fab fa-instagram"></i></a> <!-- Editable -->
+                    <a href="https://www.facebook.com/rulo.grabovieski/" target="_blank"><i class="fab fa-facebook"></i></a> <!-- Editable -->
+                    <!-- Agrega más redes si es necesario -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2022 Museo De Los 4 Ases.</p>
+    </footer>
+
+    <script>
+        // JavaScript para animaciones al hacer scroll
+        const sections = document.querySelectorAll('section');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('in-view');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+
+        
+    </script>
+
+    <script>
+    const track = document.querySelector('.galeria-track');
+    const images = document.querySelectorAll('.galeria-track img');
+    const prevBtn = document.querySelector('.prev');
+    const nextBtn = document.querySelector('.next');
+
+    let index = 0;
+    function getVisibleImages() {
+    return window.innerWidth <= 600 ? 1 : 3;
+}
+
+    function updateSlider() {
+    const width = images[0].clientWidth;
+    track.style.transform = `translateX(-${index * width}px)`;
+}
+
+function updateLimits() {
+    const visible = getVisibleImages();
+    return images.length - visible;
+}
+
+nextBtn.addEventListener('click', () => {
+    const totalSlides = updateLimits();
+    index = index >= totalSlides ? 0 : index + 1;
+    updateSlider();
+});
+
+prevBtn.addEventListener('click', () => {
+    const totalSlides = updateLimits();
+    index = index <= 0 ? totalSlides : index - 1;
+    updateSlider();
+});
+
+window.addEventListener('resize', () => {
+    index = 0;
+    updateSlider();
+});
+
+</script>
+
+</body>
+</html>
